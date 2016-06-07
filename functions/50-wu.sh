@@ -1,0 +1,10 @@
+alias weather="wu"
+alias astro="wu -astro"
+alias almanac="wu -almanac"
+alias tides="wu -tides"
+alias slookup="wu -lookup"
+alias forecast="wu -forecast"
+alias forecast10="wu -forecast10"
+alias alerts="wu -alerts"
+alias yesterday="wu -yesterday"
+

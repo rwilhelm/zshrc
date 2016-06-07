@@ -1,0 +1,97 @@
+#!/usr/bin/env zsh
+# $Hg: prompt_rene_setup,v ed776a7d1b3e Thu Sep 07 01:18:22 2006 +0200 $
+# vim: ft=zsh
+# Fri Dec 13 07:41:46 CET 2013
+# 2007-2013 (c) René Wilhelm <rene.wilhelm@gmail.com>
+
+# XXX "date +%s" prints "27m" in front of its output.
+
+# http://www.zsh.org/mla/users/2000/msg00447.html
+#
+# %{ and %} must surround all parts of the prompt that don't affect the cursor
+# position.  Otherwise zsh has no idea how much space the prompt will take up
+# on the screen.
+#
+# -zefram
+
+# http://www.acm.uiuc.edu/workshops/zsh/prompt/conditionals.html
+# http://www.acm.uiuc.edu/workshops/zsh/prompt/escapes.html
+# http://www.acm.uiuc.edu/workshops/zsh/prompt/formatting.html
+
+prompt_rene_setup() {
+	precmd() {
+		# NOTE: This will run on everything you do in your shell (and slow
+		# things down, eventually).
+
+		if [[ $SSH_CONNECTION ]]; then
+			case $HOST in
+				"LiveGovWP1")
+					host="%{%F{red}%} LIVEANDGOV%{%f%}" ;;
+
+				"penguin2")
+					host="%{%F{red}%} PENGUIN2%{%f%}" ;;
+
+				"Autechre")
+					host="%{%F{red}%} AUTECHRE%{%f%}" ;;
+
+				"phobos")
+					host="%{%F{red}%} PHOBOS%{%f%}" ;;
+
+				"lvps92-51-147-239.dedicated.hosteurope.de")
+					host="%{%F{red}%} PHOBOS%{%f%}" ;;
+			esac
+		fi
+
+		# root
+		root="%{%K{red}%F{white}%B%}%(#. %m .)%{%f%k%b%}"
+
+		# last return code if not 0
+		# FIXME BUG XXX prompt breaks at completion when in RPS1
+		code="%{%F{red}%}%(?..%?)%{%f%}"
+
+		# history number
+		hist="%{%F{blue}%}%h%{%f%}"
+
+		# current parser state (for, while, if, ...)
+		state="%{%F{yellow}%}%(_.%_.)%{%f%}"
+
+		# shell level if > 1
+		shlvl="%(5L. %{%K{blue}%F{white}%B%}%  %L %{%f%k%b%}.)"
+
+		# notification on important dirs
+		# [ $(hash -d $PWD) > /dev/null ] && important=" %{%F{red}%}✗%{%f%}" || unset important
+
+		if [[ -d .git ]] || git rev-parse --git-dir >/dev/null 2>&1; then
+			if git status -z | grep -q '.'; then
+				git=" %{%F{yellow}%}$(git symbolic-ref HEAD | cut -d/ -f3-)%{%f%}" # unclean
+			else
+				git=" %{%F{green}%}$(git symbolic-ref HEAD | cut -d/ -f3-)%{%f%}" # clean
+			fi
+		else
+			unset git
+		fi
+
+		if [[ -d .hg ]]; then
+			hg status -Sn | grep -q '.' && hg=" %{%F{cyan}%}✗%{%f%}" || hg=" %{%F{green}%}√%{%f%}"
+		else
+			unset hg
+		fi
+
+		thing="%{%B%F{yellow}%}:%{%b%f%}" # λ :
+
+		# path
+		#p="%{%B%F{black}%}%2c%{%b%f%}"
+		p="%2c"
+
+		PS1="${hist}${git}${hg}${host} ${p} ${root}${shlvl}${important}${code}${thing} "
+		PS2="${state} > "
+		#RPS1="${host}"
+		#RPS1="${code}${root}"
+
+		# afaicr set term title or abduco pane title
+		echo -ne "\033]0;$(uname -n)\007"
+	}
+	preexec () {}
+}
+
+prompt_rene_setup "$@"

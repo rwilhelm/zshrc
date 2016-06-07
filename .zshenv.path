@@ -1,0 +1,29 @@
+path=(
+  {$LOCAL,/usr{/local,},}/{sbin,bin} # ^^
+  #/usr/libexec
+  #$(cat /etc/paths.d/*)
+  #$LOCAL/src/depot_tools
+  $path
+)
+
+# if [ -x /usr/libexec/path_helper ]; then
+#   path+=($(diff =(print -l $(/usr/libexec/path_helper | sed 's/PATH="//; s/"; export PATH;//; s/:/ /g') | sort) =(print -l $path | sort) | sed -n 's/< //p'))
+#   path+=($(cat /etc/paths.d/*))
+# fi
+
+fpath=(
+  $ZDOTDIR/functions{,/*(/)}
+  /usr/local/share/zsh*/*(/)
+)
+
+cdpath=()
+fignore=(\~) # ?
+
+# CLEAN UP PATHS
+# http://www.zsh.org/mla/users/2008/msg00780.html
+path=($^path(N))               # remove non-existing dirs
+fpath=($^fpath(N))             # remove non-existing dirs
+path=(${${path//\/##/\/}%/})   # remove trailing slashes
+fpath=(${${fpath//\/##/\/}%/}) # remove trailing slashes
+#fpath=($^fpath(/^F))          # remove empty dirs # FIXME
+typeset -U path fpath          # remove duplicate dirs

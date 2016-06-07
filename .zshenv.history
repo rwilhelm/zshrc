@@ -1,0 +1,26 @@
+setopt \
+  APPEND_HISTORY \
+  EXTENDED_HISTORY \
+  HIST_ALLOW_CLOBBER \
+  HIST_EXPIRE_DUPS_FIRST \
+  HIST_IGNORE_DUPS \
+  HIST_IGNORE_SPACE \
+  HIST_REDUCE_BLANKS \
+  HIST_SUBST_PATTERN \
+  HIST_VERIFY
+
+HISTFILE=$ZDOTDIR/history
+HISTSIZE=4294967295
+SAVEHIST=2147483647
+
+# export HISTORY_IGNORE='pass -c'
+
+# source $ZDOTDIR/functions/Widgets/zsh-history-substring-search/zsh-history-substring-search.zsh # 20
+# bindkey -M emacs '^P' history-substring-search-up
+# bindkey -M emacs '^N' history-substring-search-down
+
+# bindkey '^P'  history-beginning-search-backward
+# bindkey '^N'  history-beginning-search-forward
+
+# bindkey "^[OA" history-beginning-search-backward
+# bindkey "^[OB" history-beginning-search-forward
